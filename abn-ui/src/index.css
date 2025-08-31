@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html.dark {
+  color-scheme: dark;
+}
+html:not(.dark) {
+  color-scheme: light;
+}
+body {
+  @apply min-h-screen bg-white text-slate-900;
+}
+html.dark body {
+  @apply bg-slate-950 text-slate-100;
+}
+
+/* Ripple like MUI */
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+.btn-ripple .ripple {
+  position: absolute;
+  border-radius: 9999px;
+  transform: scale(0);
+  animation: ripple 600ms linear;
+  background-color: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+  opacity: 0.75;
+}
+.btn-ripple.outline .ripple {
+  background-color: rgba(90, 169, 230, 0.35);
+}
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}

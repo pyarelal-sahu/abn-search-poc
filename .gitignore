@@ -1,0 +1,51 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE/editor stuff
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+
+# Optional lockfiles (if you only want one lockfile type tracked, remove the rest)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# NestJS specific
+.abn-api/.env
+.abn-api/dist
+.abn-api/node_modules
+
+# Vite specific
+*.local
