@@ -1,28 +1,89 @@
-# ABN Search POC — React (JS) + Tailwind + RTK + axios (NestJS stub)
+# ABN Search POC
 
-A **front‑end–first** proof of concept that provides a ZoomInfo/Lusha/Apollo‑style search experience over **Australian Business Register (ABR)** data.
+A front‑end–first search experience over the **Australian Business Register (ABR)** data, inspired by ZoomInfo/Lusha/Apollo. Built with **React + Tailwind CSS**, state managed by **Redux Toolkit (RTK)**, and an **axios** service layer. An optional **NestJS** stub API is included for local testing.
 
-> **Attribution:** Data source — _ABN Bulk Extract_ from the **Australian Business Register** via **data.gov.au** (CC BY 3.0 AU). This repo ships with a small **synthetic sample** for instant UX.
-
----
-
-## ✨ Highlights
-
-- 🔎 **Search** across ABN, legal name, business names
-- 🧭 **Facets**: State, Entity Type, GST status, ABN Status
-- ↕️ **Sort** + **Pagination**
-- 🌓 **Dark/Light** theme (system‑aware) with persistent toggle
-- 🧰 **Common components** with **variants** and **animations**
-- 🧽 **Clear All Filters** button (Redux: `resetFilters()`)
-- 🪟 **Details modal** on card click with full company info (API + graceful fallback)
-- 🧱 **Layered architecture**: RTK slices/thunks, axios service, utils
-- 🧪 **Backend‑free demo**: falls back to `/sample.json`
+> **Data Source:** [ABN Bulk Extract — data.gov.au](https://data.gov.au/data/dataset/abn-bulk-extract)
 
 ---
 
-## 🚀 Quick start
+## 🔗 Repository & Author
 
-### Front‑end (React + Tailwind + RTK + axios — JavaScript)
+- **Author:** `Pyarelal Sahu`
+- **Repo:** https://github.com/pyarelal-sahu/abn-search-poc
+- **LinkedIn:** https://www.linkedin.com/in/pyarelal-sahu/
+- **Portfolio:** https://pyarelal-portfolio.netlify.app/
+
+---
+
+## ✨ Features
+
+- 🔎 **Search & Facets**: query, State, Entity Type, GST status, ABN status
+- ↕️ **Sort & Order**: name, state, postcode, entity type, ABN
+- 📄 **Pagination**: numbers + ellipses + first/prev/next/last
+- 🪟 **Details Modal**: ABN, status/date, GST & registration date, ACN/ARBN, DGR, names, location
+- 🧽 **Clear All Filters** (Redux action)
+- 🌓 **Dark/Light** theme (system-aware toggle)
+- 🧭 **Resilient UX**: UI falls back to `/public/sample.json` if API is offline
+- 🫧 **Button ripple** (MUI-like) & subtle animations
+- 🧰 **Common components**: Button (variants), Select (options prop), Input, Card, Badge, Modal, Spinner, EmptyState
+
+---
+
+## 🔌 API Contract
+
+**Search**
+
+```
+GET /search?q=&state=&entityType=&gst=&status=&sort=&order=&page=&pageSize=
+→ { "total": number, "page": number, "pageSize": number, "items": Company[] }
+```
+
+**Company detail**
+
+```
+GET /company/:abn
+→ Company | { "error": string }
+```
+
+A `Company` item includes:
+
+```json
+{
+  "abn": "string",
+  "legal_name": "string",
+  "entity_type": "string",
+  "abn_status": "Active | Cancelled",
+  "abn_status_date": "YYYY-MM-DD",
+  "state": "ACT|NSW|NT|QLD|SA|TAS|VIC|WA",
+  "postcode": "string",
+  "acn": "string",
+  "arbn": "string",
+  "gst_status": "Registered | Not Registered",
+  "gst_registration_date": "YYYY-MM-DD",
+  "dgr_status": "Yes | No",
+  "dgr_start_date": "YYYY-MM-DD",
+  "dgr_end_date": "YYYY-MM-DD",
+  "business_names": ["string", "..."],
+  "trading_names": ["string", "..."]
+}
+```
+
+---
+
+## 📦 Installation
+
+### Clone the repo and navigate into it:
+
+```bash
+git clone https://github.com/pyarelal-sahu/abn-search-poc.git
+cd abn-search-poc
+```
+
+---
+
+## 🚀 Getting Started
+
+### Front‑end (React + Tailwind + RTK + axios)
 
 ```bash
 cd abn-ui
@@ -39,42 +100,32 @@ npm i
 npm run start:dev      # http://localhost:3000
 ```
 
+When the API is down, the UI automatically serves results from `public/sample.json`.
+
 ---
 
-## 🗂️ Project structure
+## 🧪 Development Notes
 
+- Use **Select** by passing an `options` prop: `[{ label, value }]`
+- `Button` supports variants (`primary | outline | ghost`) and a MUI-like **ripple** on click
+- **Clear All Filters** via `resetFilters()` (Redux)
+- **Theming** is persisted in `localStorage` and respects system preference
+- **Pagination** uses numeric pages with ellipses + first/prev/next/last
+
+### UI polish — uniform card height
+
+If you see uneven card heights, ensure cards stretch to the same height in the grid:
+
+```jsx
+// grid container
+<section className="grid ... items-stretch">
+// card container
+<Card className="h-full">
+  <article className="h-full flex flex-col ...">
+    {/* content */}
+    <Button className="w-full mt-auto">View details</Button>
+  </article>
+</Card>
 ```
-abn-ui/
-  src/
-    app/                # RTK store
-    components/
-      common/           # Button, Input, Select, Badge, Card, ToggleTheme, Modal, etc.
-      Filters.jsx       # Search + facets + sort + Clear
-      CompanyCard.jsx   # Click to open DetailsModal
-      DetailsModal.jsx  # fetches /company/:abn (or sample fallback)
-      Pagination.jsx
-      Header.jsx, Footer.jsx
-    features/search/    # searchSlice.js + thunks.js
-    services/api.js     # axios + fallback logic
-    utils/              # abn.js (mod‑89), debounce.js, theme.js
-    pages/Home.jsx
-  public/sample.json
-```
 
----
-
-## 🔗 API contract
-
-- `GET /search?q=&state=&entityType=&gst=&status=&sort=&order=&page=&pageSize=`  
-  → `{ "total": number, "page": number, "pageSize": number, "items": Company[] }`
-
-- `GET /company/:abn`  
-  → `Company | { error: string }`
-
----
-
-## 👤 Author / Maintainer
-
-**Pyarelal Sahu**  
-✉️ pyarelalsahu7264@gmail.com  
-🔗 [Portfolio](https://pyarelal-portfolio.netlify.app/) · [GitHub](https://github.com/pyarelal-sahu) · [LinkedIn](https://www.linkedin.com/in/pyarelal-sahu/)
+This keeps the CTA pinned to the bottom for every card.
