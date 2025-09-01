@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "nest build && npm run copy:assets",
+    "build": "npx nest build && npm run copy:assets",
     "copy:assets": "cp src/company/sample.json dist/company/",
     "start": "node dist/main.js",
     "start:prod": "node dist/main.js",
