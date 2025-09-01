@@ -1,10 +1,14 @@
-import "reflect-metadata";
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors({ origin: true });
-  await app.listen(3000);
-  console.log("ABN API listening on http://localhost:3000");
+  app.enableCors({
+    origin: ["https://abn-search-poc.netlify.app"],
+    methods: ["GET"],
+    credentials: false,
+  });
+  const port = Number(process.env.PORT) || 3000;
+  await app.listen(port, "0.0.0.0");
 }
 bootstrap();
